@@ -1,15 +1,42 @@
-## Put comments here that give an overall description of what your
-## functions do
+# Coursera Course "R Programming"
+# Solution for Week 3 > Programming Assignment 2: Lexical Scoping
+#
+# @author Andrey Legayev
 
-## Write a short comment describing this function
+# Example usage:
+# > a <- matrix(rnorm(2000^2), nrow=2000)
+# > x <- makeCacheMatrix()
+# > x$set(a)
+# > n <- cacheSolve(x) # not cached run
+# > n <- cacheSolve(x) # cached data returned
+# getting cached data
 
+
+# Create object for cached matrix calucations
 makeCacheMatrix <- function(x = matrix()) {
-
+    cache <- NULL
+    set <- function(y) {
+        x <<- y
+        cache <<- NULL
+    }
+    get <- function() x
+    setCache <- function(v) cache <<- v
+    getCache <- function() cache
+    list(set = set, get = get,
+         setCache = setCache,
+         getCache = getCache)
 }
 
 
-## Write a short comment describing this function
-
+# Get inversed matix, cached value may be returned
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+    cache <- x$getCache()
+    if(!is.null(cache)) {
+        message("getting cached data")
+        return(cache)
+    }
+    data <- x$get()
+    s <- solve(data, ...)
+    x$setCache(s)
+    s
 }
